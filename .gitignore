@@ -1,0 +1,33 @@
+# Environment
+.env
+.python-version
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+dist/
+build/
+
+# Data & models (large files)
+data/raw/
+data/processed/
+data/embeddings/
+models/*.pkl
+models/*.json
+
+# Logs
+logs/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
