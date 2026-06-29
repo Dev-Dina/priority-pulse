@@ -15,4 +15,4 @@ COPY backend/scripts /workspace/backend/scripts
 ENV PATH="/workspace/backend/.venv/bin:$PATH"
 
 EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "python scripts/check_artifacts.py && exec uvicorn app.main:app --host 0.0.0.0 --port 8000"]
