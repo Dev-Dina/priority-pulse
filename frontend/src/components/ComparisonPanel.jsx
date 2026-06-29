@@ -91,7 +91,7 @@ export default function ComparisonPanel({ result, trainedMetrics }) {
             <Row
               label="Test Accuracy"
               ml={bestM ? fmtPct(bestM.test_accuracy ?? bestM.accuracy) : <span className="dim">run training</span>}
-              llm={<span className="dim">see notebook</span>}
+              llm={<span className="dim">—</span>}
               llmClass="dim"
             />
             <Row
