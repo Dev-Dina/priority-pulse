@@ -2,7 +2,7 @@
 Vector store operations using Qdrant.
 
 Why Qdrant:
-  - Runs as a dedicated Docker service (fits the compose requirement).
+  - Runs as a dedicated Docker service.
   - Zero extension or driver setup — just pull the image.
   - Native cosine similarity, payload filtering, and scroll API.
   - Python client (qdrant-client) is clean and well-maintained.
@@ -14,6 +14,7 @@ Two classes:
 
 from __future__ import annotations
 
+from functools import lru_cache
 from typing import Any, Dict, List, Optional
 
 import numpy as np
@@ -62,6 +63,7 @@ class EmbeddingService:
         )
 
     @classmethod
+    @lru_cache(maxsize=512)
     def embed_single(cls, text: str) -> np.ndarray:
         return cls.embed([text])[0]
 
