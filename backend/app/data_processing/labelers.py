@@ -1,7 +1,3 @@
-"""
-Priority Labeling Logic (SLA-based weak supervision)
-"""
-
 import re
 from typing import Dict
 import pandas as pd
@@ -19,7 +15,7 @@ from .labeling_config import (
 
 class PriorityLabeler:
     """
-    SLA-based triage — binary output: URGENT or NORMAL.
+    binary output: URGENT or NORMAL.
 
     Labeling rule (weak supervision — documented honestly):
       Step 1 — Hard override: any critical-signal keyword (stranded, medical, sue…)

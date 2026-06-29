@@ -1,8 +1,3 @@
-"""
-Data Cleaning Pipeline for TWCS Dataset
-Filters airline-related inbound tweets and joins agent outbound responses.
-"""
-
 import re
 from typing import Dict, List
 
@@ -46,12 +41,6 @@ class DataCleaner:
             raise
 
     def extract_target_airline(self, text: str) -> str:
-        """
-        Extract first @mention at start of tweet.
-        Example:
-        @Delta DM sent -> Delta
-        @DELTA flight delayed -> DELTA
-        """
         if not isinstance(text, str):
             return None
 

@@ -1,21 +1,3 @@
-"""
-ML Training Pipeline — 60 / 20 / 20 (train / validation / test)
-
-Split rationale:
-  Train (60%)   — the model learns from this data
-  Validation (20%) — used to select the best model; looked at during development
-  Test (20%)    — held out completely; final reported metrics only touch this once
-
-Why not 80/20?  With ~88k rows the validation set (~17.6k) is large enough to
-give stable estimates. Using val for model selection and keeping test truly
-held-out avoids optimistic bias from leaking test information into selection.
-
-Honest caveat: the training target (is_urgent) was created by a regex-based
-labeling rule. Any model trained here will partly learn to reproduce that rule.
-The engineered features add independent signal (keyword specificity, raw counts,
-time mentions) beyond what the labeling booleans capture.
-"""
-
 import json
 import joblib
 import pandas as pd
