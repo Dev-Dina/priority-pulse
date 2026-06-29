@@ -19,12 +19,11 @@ from typing import Any, Dict, List, Optional
 
 import numpy as np
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct, Filter
+from qdrant_client.models import Distance, PointStruct, VectorParams
 from sentence_transformers import SentenceTransformer
 
 from app.config import settings
 from app.core.logger import app_logger
-
 
 # ── Embedding ──────────────────────────────────────────────────────────────
 

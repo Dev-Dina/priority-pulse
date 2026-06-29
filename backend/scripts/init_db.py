@@ -16,8 +16,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app.services.vector_service import VectorStore
 from app.core.logger import data_logger
+from app.services.vector_service import VectorStore
 
 
 def main(recreate: bool = False) -> None:

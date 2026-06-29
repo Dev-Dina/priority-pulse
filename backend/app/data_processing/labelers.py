@@ -1,15 +1,17 @@
 import re
 from typing import Dict
+
 import pandas as pd
 
 from app.core.logger import data_logger
+
 from .labeling_config import (
-    URGENCY_KEYWORDS,
     CRITICAL_KEYWORDS,
-    PROFANITY_KEYWORDS,
-    SARCASM_PATTERNS,
     DELAY_PATTERNS,
     LABEL_THRESHOLDS,
+    PROFANITY_KEYWORDS,
+    SARCASM_PATTERNS,
+    URGENCY_KEYWORDS,
 )
 
 

@@ -24,12 +24,10 @@ from typing import Any, Dict, List
 
 from google import genai
 from google.genai import types
-
 from openai import OpenAI
 
 from app.config import settings
 from app.core.logger import app_logger
-
 
 # ── Pricing ($/1M tokens) ─────────────────────────────────────────────────
 

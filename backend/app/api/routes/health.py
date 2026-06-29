@@ -10,8 +10,8 @@ import json
 from fastapi import APIRouter
 
 from app.config import settings
-from app.services.vector_service import vector_store
 from app.services.ml_service import ml_service
+from app.services.vector_service import vector_store
 
 router = APIRouter()
 

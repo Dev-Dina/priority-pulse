@@ -2,9 +2,9 @@
 Central Configuration Management
 """
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Project root: backend/app/config.py → go up 2 levels → backend/
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     QDRANT_COLLECTION: str = "tickets"
 
     # ── LLM ───────────────────────────────────────────────────────
-    GEMINI_API_KEY: str | None = None 
+    GEMINI_API_KEY: str | None = None
     LLM_MODEL: str = "gemini-2.0-flash-lite"
     LLM_MAX_TOKENS: int = 1024
     LLM_TEMPERATURE: float = 0.7

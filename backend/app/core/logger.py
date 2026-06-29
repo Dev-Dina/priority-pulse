@@ -5,11 +5,12 @@ All query audit logs go to a JSONL file (one JSON object per line).
 Set LOG_TO_FILE=true in .env — that is the only persistence layer needed.
 """
 
-import sys
 import json
-from pathlib import Path
+import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, Optional
+
 from loguru import logger
 
 from app.config import settings

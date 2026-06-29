@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes import query, health
+
+from app.api.routes import health, query
 from app.config import settings
 
 app = FastAPI(title=settings.APP_NAME, version=settings.APP_VERSION)
