@@ -4,12 +4,13 @@ RUN pip install uv --no-cache-dir
 
 WORKDIR /workspace
 
-COPY backend/pyproject.toml backend/uv.lock backend/
+COPY backend/pyproject.toml backend/
 
 WORKDIR /workspace/backend
-RUN uv sync --frozen --no-dev
+RUN uv sync --no-dev
 
 COPY backend/app /workspace/backend/app
+COPY backend/scripts /workspace/backend/scripts
 
 ENV PATH="/workspace/backend/.venv/bin:$PATH"
 

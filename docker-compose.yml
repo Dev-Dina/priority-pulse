@@ -5,6 +5,12 @@ services:
       - "6333:6333"
     volumes:
       - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:6333/healthz || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     restart: unless-stopped
 
   backend:
@@ -22,7 +28,8 @@ services:
       - ./models:/workspace/models
       - ./logs:/workspace/logs
     depends_on:
-      - qdrant
+      qdrant:
+        condition: service_healthy
     restart: unless-stopped
 
   frontend:
