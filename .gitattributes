@@ -1,0 +1,31 @@
+# Normalize line endings. Git stores text as LF; explicit eol=lf also forces LF
+# on checkout so the working tree is deterministic across Windows/macOS/Linux.
+* text=auto
+
+# Source and config — force LF
+*.py    text eol=lf
+*.js    text eol=lf
+*.jsx   text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.toml  text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.sh    text eol=lf
+Dockerfile text eol=lf
+.gitignore text eol=lf
+
+# Notebooks — JSON text, LF, treated as generated to keep diffs/linguist sane
+*.ipynb text eol=lf linguist-generated
+
+# Lockfiles — generated text, LF, suppress noisy diffs
+uv.lock          text eol=lf linguist-generated -diff
+package-lock.json text eol=lf linguist-generated -diff
+
+# Binary assets — never touched
+*.pkl binary
+*.png binary
+*.jpg binary
+*.ico binary
