@@ -28,7 +28,7 @@ from app.services.ml_service import ml_service
 from app.services.rag_service import rag_service
 
 router = APIRouter()
-
+#Separate schemas services - apis TODO
 
 # ── Schemas ────────────────────────────────────────────────────────────────
 
@@ -62,7 +62,7 @@ _SCOPE_HINT = (
     "flights, delays, cancellations, baggage, refunds, check-in, boarding, "
     "loyalty programmes, and related travel issues."
 )
-
+# separate this block
 
 # ── Endpoint ───────────────────────────────────────────────────────────────
 
