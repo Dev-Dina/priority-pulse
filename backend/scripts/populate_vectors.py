@@ -8,10 +8,13 @@ sentence-transformers → upserts into Qdrant.
 Tweets are already short (≤ 280 chars after cleaning), so splitting further
 would destroy meaning. Each tweet = one chunk.
 
-The chunk_text prepends the airline name for domain context:
+The chunk_text embeds the customer complaint only, prefixed with the airline
+name for domain context:
     "[Delta Air Lines] my bag never arrived and nobody answers"
-We deliberately exclude the priority label so retrieval is content-driven,
-not label-driven.
+Agent responses are stored in the Qdrant payload and injected into the LLM
+prompt at query time — not embedded, so the vector stays in complaint space
+and aligns with the user's query.
+The priority label is excluded so retrieval is content-driven, not label-driven.
 
 ─── Resumable ────────────────────────────────────────────────────────────────
 Re-running is safe — Qdrant upsert overwrites the same point ID, so no
@@ -30,7 +33,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import numpy as np
 import pandas as pd
 from qdrant_client.models import PointStruct
 
@@ -46,22 +48,19 @@ INSERT_BATCH = 256   # points per Qdrant upsert call
 
 def create_chunk_text(row: pd.Series) -> str:
     """
-    Build the text that gets embedded.
+    Build the text that gets embedded — the customer complaint only.
 
-    Format (no agent response): "[Airline] <customer tweet>"
-    Format (with agent response): "[Airline] <customer tweet> | Resolution: <agent reply>"
+    Format: "[Airline] <customer tweet>"
 
-    The airline prefix gives domain context. The agent response, when present,
-    lets the retriever surface how similar past issues were resolved — which is
-    the core value of RAG over a pure keyword search.
-    The priority label is deliberately excluded so retrieval stays content-driven.
+    The airline prefix gives domain context.
+    Agent responses are stored in the payload and injected into the LLM
+    prompt at query time. They must not be part of the embedded text because
+    blending complaint + resolution pulls the vector away from complaint space,
+    misaligning it with the user's query (which is always a complaint).
+    The priority label is excluded so retrieval stays content-driven.
     """
     airline = str(row.get("airline", "Unknown")).strip()
     text = str(row.get("text", "")).strip()
-    agent_response = str(row.get("agent_response", "")).strip()
-
-    if agent_response:
-        return f"[{airline}] {text} | Resolution: {agent_response}"
     return f"[{airline}] {text}"
 
 
