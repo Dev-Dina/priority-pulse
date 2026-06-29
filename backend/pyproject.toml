@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "google-genai>=1.0.0",
+    "openai>=1.0.0",
     "fastapi>=0.136.0",
     "httpx>=0.28.1",
     "joblib>=1.5.3",
@@ -23,3 +24,13 @@ dependencies = [
     "uvicorn[standard]>=0.46.0",
     "xgboost>=3.2.0",
 ]
+
+# Use CPU-only PyTorch inside Docker to avoid downloading multi-GB CUDA packages.
+# sentence-transformers pulls in torch; without this it installs the GPU build (~2.5 GB).
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
