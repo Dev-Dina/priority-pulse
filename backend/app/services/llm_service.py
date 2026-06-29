@@ -212,20 +212,33 @@ class LLMService:
     ) -> tuple[str, float, float]:
         """RAG answer: inject top-k retrieved tickets as context."""
         if sources:
-            context_lines = [
-                f"[{s['airline']} | {s['priority']} | similarity={s['similarity']}]\n{s['text']}"
-                for s in sources
-            ]
+            context_lines = []
+            for s in sources:
+                block = (
+                    f"[{s['airline']} | {s['priority']} | similarity={s['similarity']}]\n"
+                    f"Customer: {s['text']}"
+                )
+                if s.get("agent_response"):
+                    block += f"\nResolution: {s['agent_response']}"
+                context_lines.append(block)
             context = "\n\n".join(context_lines)
             prompt = (
-                "You are a customer support analyst for an airline. "
-                "Use the following similar past tickets as context to answer the user's question. "
-                "If the context is not relevant, say so and answer from general knowledge.\n\n"
+                "You are a customer support analyst for an airline.\n"
+                "Answer the user's question using the similar past tickets below as your "
+                "primary source. Ground your response in how those past cases were handled. "
+                "Similarity scores range from 0 to 1 — be explicit about uncertainty when "
+                "scores are below 0.5. Do not invent information not present in the tickets.\n\n"
                 f"--- Similar past tickets ---\n{context}\n\n"
                 f"--- User question ---\n{query}\n\nAnswer:"
             )
         else:
-            prompt = query
+            prompt = (
+                "You are a customer support analyst for an airline. "
+                "No similar past tickets were found for this query. "
+                "Answer based on general airline customer support knowledge and "
+                "make clear that your response is not drawn from specific past cases.\n\n"
+                f"Question: {query}\n\nAnswer:"
+            )
 
         return self._call(prompt)
 
