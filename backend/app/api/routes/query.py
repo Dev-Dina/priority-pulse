@@ -13,7 +13,7 @@ Pipeline per request:
   2. RAG        — LLM answer with retrieved context
   3. Plain      — LLM answer without context (baseline)
   4. ML         — trained binary classifier (URGENT / NORMAL)
-  5. LLM zero-shot — same question to Claude, no training
+  5. LLM zero-shot — same question to the LLM (Gemini, Groq fallback), no training
   6. Log        — append audit record to queries.jsonl
 """
 
