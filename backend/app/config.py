@@ -35,10 +35,14 @@ class Settings(BaseSettings):
     QDRANT_COLLECTION: str = "tickets"
 
     # ── LLM ───────────────────────────────────────────────────────
-    GEMINI_API_KEY: str
+    GEMINI_API_KEY: str | None = None 
     LLM_MODEL: str = "gemini-2.0-flash-lite"
     LLM_MAX_TOKENS: int = 1024
     LLM_TEMPERATURE: float = 0.7
+
+    # ── LLM fallback (OpenAI) ─────────────────────────────────────
+    OPENAI_API_KEY: str | None = None
+    OPENAI_FALLBACK_MODEL: str = "gpt-4o-mini"
 
     # ── Embeddings ────────────────────────────────────────────────
     EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
