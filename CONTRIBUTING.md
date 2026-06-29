@@ -30,7 +30,8 @@ Examples:
 ## Code standards (held going forward)
 
 - **Lint + format:** [ruff](https://docs.astral.sh/ruff/). Run `ruff check` and
-  `ruff format` before committing; CI enforces both.
+  `ruff format` before committing. CI runs `ruff check` (config in
+  `backend/pyproject.toml`).
 - **Type hints** on every public function — parameters and return type.
 - **Docstrings:** concise. State what a function does and any non-obvious
   contract; skip restating the obvious.
