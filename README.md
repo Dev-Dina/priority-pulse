@@ -98,9 +98,11 @@ on imbalanced data):
 
 | Model | F1 | Accuracy | ROC-AUC |
 |---|---|---|---|
-| Logistic Regression | 0.731 | 0.916 | 0.876 |
-| Random Forest | 0.722 | 0.909 | 0.856 |
-| **Gradient Boosting** ✓ | **0.758** | **0.922** | **0.885** |
+| Logistic Regression | 0.7228 | 0.9139 | 0.8713 |
+| Random Forest | 0.7205 | 0.9090 | 0.8517 |
+| **Gradient Boosting** ✓ | **0.7553** | **0.9219** | **0.8803** |
+
+_Held-out test-set metrics; best model selected by validation F1. Figures match `models/metrics.json`._
 
 ---
 
