@@ -1,5 +1,5 @@
 """
-LLM Service — Gemini primary, OpenAI fallback.
+LLM Service — Gemini primary, Groq fallback.
 
 Four responsibilities:
   1. check_topic          — topic guard: is this query within scope?
@@ -11,8 +11,11 @@ Every content call returns (text, latency_ms, cost_usd).
 check_topic returns (is_allowed: bool, reason: str).
 
 Pricing:
-  Gemini 2.0 Flash Lite — $0.075 / 1M input, $0.30 / 1M output
-  OpenAI gpt-4o-mini    — $0.15  / 1M input, $0.60 / 1M output
+  Gemini 2.0 Flash Lite        — $0.075 / 1M input, $0.30 / 1M output
+  Groq llama-3.3-70b-versatile — $0.59  / 1M input, $0.79 / 1M output
+
+Groq serves only open-weight models, so the fallback's behaviour and answer
+quality differ from a GPT/Claude/Gemini-proper model.
 """
 
 import re
@@ -33,16 +36,16 @@ from app.core.logger import app_logger
 _GEMINI_IN  = 0.075
 _GEMINI_OUT = 0.30
 
-_OPENAI_IN  = 0.15
-_OPENAI_OUT = 0.60
+_GROQ_IN  = 0.59
+_GROQ_OUT = 0.79
 
 
 def _gemini_cost(in_tok: int, out_tok: int) -> float:
     return (in_tok * _GEMINI_IN + out_tok * _GEMINI_OUT) / 1_000_000
 
 
-def _openai_cost(in_tok: int, out_tok: int) -> float:
-    return (in_tok * _OPENAI_IN + out_tok * _OPENAI_OUT) / 1_000_000
+def _groq_cost(in_tok: int, out_tok: int) -> float:
+    return (in_tok * _GROQ_IN + out_tok * _GROQ_OUT) / 1_000_000
 
 
 # ── Tier-1 heuristic patterns (zero cost, <1 ms) ──────────────────────────
@@ -86,14 +89,17 @@ class LLMService:
         else:
             app_logger.warning("LLMService: GEMINI_API_KEY not set — Gemini disabled.")
 
-        self._openai: OpenAI | None = None
-        if settings.OPENAI_API_KEY:
-            self._openai = OpenAI(api_key=settings.OPENAI_API_KEY)
+        self._groq: OpenAI | None = None
+        if settings.GROQ_API_KEY:
+            self._groq = OpenAI(
+                api_key=settings.GROQ_API_KEY,
+                base_url=settings.GROQ_BASE_URL,
+            )
             app_logger.info(
-                f"LLMService: OpenAI fallback active (model={settings.OPENAI_FALLBACK_MODEL})"
+                f"LLMService: Groq fallback active (model={settings.GROQ_MODEL})"
             )
         else:
-            app_logger.warning("LLMService: OPENAI_API_KEY not set — OpenAI fallback disabled.")
+            app_logger.warning("LLMService: GROQ_API_KEY not set — Groq fallback disabled.")
 
     # ── Provider calls ─────────────────────────────────────────────────────
 
@@ -122,16 +128,16 @@ class LLMService:
         )
         return text, round(latency_ms, 2), round(cost, 6)
 
-    def _openai_call(
+    def _groq_call(
         self,
         prompt: str,
         max_tokens: int,
         temperature: float,
     ) -> tuple[str, float, float]:
-        """Call OpenAI. Returns (text, latency_ms, cost_usd)."""
+        """Call Groq via the OpenAI-compatible API. Returns (text, latency_ms, cost_usd)."""
         t0 = time.perf_counter()
-        response = self._openai.chat.completions.create(
-            model=settings.OPENAI_FALLBACK_MODEL,
+        response = self._groq.chat.completions.create(
+            model=settings.GROQ_MODEL,
             messages=[{"role": "user", "content": prompt}],
             max_tokens=max_tokens,
             temperature=temperature,
@@ -139,7 +145,7 @@ class LLMService:
         latency_ms = (time.perf_counter() - t0) * 1000
         text = response.choices[0].message.content or ""
         usage = response.usage
-        cost = _openai_cost(usage.prompt_tokens or 0, usage.completion_tokens or 0)
+        cost = _groq_cost(usage.prompt_tokens or 0, usage.completion_tokens or 0)
         return text, round(latency_ms, 2), round(cost, 6)
 
     def _call(
@@ -148,7 +154,7 @@ class LLMService:
         max_tokens: int = settings.LLM_MAX_TOKENS,
         temperature: float | None = None,
     ) -> tuple[str, float, float]:
-        """Try Gemini first; fall back to OpenAI on any error."""
+        """Try Gemini first; fall back to Groq on any error."""
         t_val = temperature if temperature is not None else settings.LLM_TEMPERATURE
 
         if self._gemini is not None:
@@ -156,14 +162,14 @@ class LLMService:
                 return self._gemini_call(prompt, max_tokens, t_val)
             except Exception as e:
                 app_logger.warning(
-                    f"Gemini failed, falling back to OpenAI: {type(e).__name__}: {str(e)[:120]}"
+                    f"Gemini failed, falling back to Groq: {type(e).__name__}: {str(e)[:120]}"
                 )
 
-        if self._openai is not None:
+        if self._groq is not None:
             try:
-                return self._openai_call(prompt, max_tokens, t_val)
+                return self._groq_call(prompt, max_tokens, t_val)
             except Exception as e:
-                app_logger.error(f"OpenAI call failed: {type(e).__name__}: {str(e)[:120]}")
+                app_logger.error(f"Groq call failed: {type(e).__name__}: {str(e)[:120]}")
                 return f"[LLM unavailable: {type(e).__name__}: {str(e)[:120]}]", 0.0, 0.0
 
         return "[LLM unavailable: no provider configured]", 0.0, 0.0

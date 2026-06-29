@@ -40,9 +40,12 @@ class Settings(BaseSettings):
     LLM_MAX_TOKENS: int = 1024
     LLM_TEMPERATURE: float = 0.7
 
-    # ── LLM fallback (OpenAI) ─────────────────────────────────────
-    OPENAI_API_KEY: str | None = None
-    OPENAI_FALLBACK_MODEL: str = "gpt-4o-mini"
+    # ── LLM fallback (Groq — OpenAI-compatible API) ───────────────
+    # Groq serves only open-weight models (e.g. Llama, gpt-oss), so the
+    # fallback's behaviour and answer quality differ from Gemini-proper.
+    GROQ_API_KEY: str | None = None
+    GROQ_BASE_URL: str = "https://api.groq.com/openai/v1"
+    GROQ_MODEL: str = "llama-3.3-70b-versatile"
 
     # ── Embeddings ────────────────────────────────────────────────
     EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
