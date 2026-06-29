@@ -1,12 +1,12 @@
 [project]
 name = "backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "Priority Pulse backend — FastAPI RAG + ML ticket triage API"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "google-genai>=1.0.0",
-    "openai>=1.0.0",
+    "openai>=2.32.0",
     "fastapi>=0.136.0",
     "httpx>=0.28.1",
     "joblib>=1.5.3",
