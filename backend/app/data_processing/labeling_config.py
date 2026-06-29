@@ -1,6 +1,5 @@
 """
 Labeling configuration (weak supervision rules)
-Separated from Settings to avoid Pydantic issues
 """
 
 URGENCY_KEYWORDS = [
@@ -82,6 +81,6 @@ LABEL_WEIGHTS = {
 }
 
 LABEL_THRESHOLDS = {
-    "critical": 6,
+    # "critical": 6,
     "urgent": 3,
 }
